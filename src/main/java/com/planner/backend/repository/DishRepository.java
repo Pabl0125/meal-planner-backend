@@ -1,6 +1,6 @@
 package com.planner.backend.repository;
 
-import com.planner.backend.model.Plato;
+import com.planner.backend.model.Dish;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +14,4 @@ import org.springframework.stereotype.Repository;
  * Nos regala métodos automáticos como: findAll(), findById(), save(), deleteById(), etc.
  */
 @Repository
-public interface PlatoRepository extends JpaRepository<Plato, Long> {}
+public interface DishRepository extends JpaRepository<Dish, Long> {}
