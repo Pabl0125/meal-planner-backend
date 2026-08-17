@@ -1,6 +1,7 @@
 package com.planner.backend.controller;
-import com.planner.backend.model.Plato;
-import com.planner.backend.repository.PlatoRepository;
+
+import com.planner.backend.model.Dish;
+import com.planner.backend.service.DishService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,27 +18,29 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/api/platos")
+@RequestMapping("/api/dishes")
 @CrossOrigin(origins = "*")
-public class PlatoController {
+public class DishController {
     /**
      * Inyección de Dependencias por Constructor (Buenas Prácticas):
      * Spring busca un Bean de tipo PlatoRepository en su contenedor de Inversión de Control (IoC)
      * e inyecta la instancia de forma automática aquí al instanciar el Controlador.
      */
-    private final PlatoRepository platoRepository;
 
-    public PlatoController(PlatoRepository platoRepository) {
-        this.platoRepository = platoRepository;
+    private final DishService dishService;
+
+    public DishController(DishService dishService) {
+        this.dishService = dishService;
     }
 
+
     @GetMapping// Metodo que mapea las solicitudes HTTP GET enviadas a '/api/platos
-    public List<Plato> listarPlatos() {
-        return platoRepository.findAll();
+    public List<Dish> listDishes() {
+        return dishService.getAllDishes();
     }
 
     @PostMapping // Metodo que mapea solicitudes HTTP POST ENVIADAS A /api/platos
-    public Plato crearPlato(@RequestBody Plato plato) {
-        return platoRepository.save(plato);
+    public Dish createDish(@RequestBody Dish dish) {
+        return dishService.saveDish(dish);
     }
 }

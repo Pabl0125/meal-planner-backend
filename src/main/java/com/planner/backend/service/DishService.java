@@ -1,7 +1,7 @@
 package com.planner.backend.service;
 
-import com.planner.backend.model.Plato;
-import com.planner.backend.repository.PlatoRepository;
+import com.planner.backend.model.Dish;
+import com.planner.backend.repository.DishRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -10,25 +10,25 @@ import java.util.List;
  * Aquí es donde debe residir toda la "lógica de negocio" de tu aplicación.
  */
 @Service
-public class PlatoService {
+public class DishService {
 
-    private final PlatoRepository platoRepository;
+    private final DishRepository dishRepository;
 
     // Inyectamos el repositorio aquí en lugar del controlador
-    public PlatoService(PlatoRepository platoRepository) {
-        this.platoRepository = platoRepository;
+    public DishService(DishRepository dishRepository) {
+        this.dishRepository = dishRepository;
     }
 
-    public List<Plato> obtenerTodosLosPlatos() {
+    public List<Dish> getAllDishes() {
         // Aquí en el futuro puedes añadir filtros, ordenación, etc.
-        return platoRepository.findAll();
+        return dishRepository.findAll();
     }
 
-    public Plato guardarPlato(Plato plato) {
+    public Dish saveDish(Dish dish) {
         // Ejemplo de lógica de negocio: validar que tenga nombre antes de guardar
-        if (plato.getNombre() == null || plato.getNombre().isEmpty()) {
+        if (dish.getName() == null || dish.getName().isEmpty()) {
             throw new IllegalArgumentException("El plato debe tener un nombre");
         }
-        return platoRepository.save(plato);
+        return dishRepository.save(dish);
     }
 }
