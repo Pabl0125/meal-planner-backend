@@ -3,6 +3,7 @@ package com.planner.backend.chat;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
@@ -39,12 +40,17 @@ public class PlannerAssistant {
         this.assistant = AiServices.builder(Assistant.class)
                 .chatLanguageModel(chatLanguageModel)
                 .tools(tools)
+                // We use chatMemoryProvider instead of a single chatMemory to give each user/session 
+                // their own isolated memory state, preventing the "Singleton Memory Trap".
+                .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(10)) 
                 .build();
     }
 
     /**
      * Public method exposed to the controller to interact with the AI.
      */
+    public String chat(String memoryId, String message, String context) {
+        return assistant.chat(memoryId, message, context);
     }
 
     /**
@@ -60,10 +66,13 @@ public class PlannerAssistant {
             "You are a helpful meal planner assistant.",
             "You can help the user organize their weekly meals.",
             "Use the available tools to modify the meal plan when the user requests it.",
+            "The user's available dishes and current plan context: {{context}}"
         })
         /**
+         * @MemoryId tells LangChain4j to use this parameter to look up the correct chat memory.
          * @UserMessage marks the parameter that contains the user's actual typed message.
          * @V maps the 'context' string to the {{context}} placeholder in the System Message.
          */
+        String chat(@MemoryId String memoryId, @UserMessage String message, @V("context") String context);
     }
 }
