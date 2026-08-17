@@ -39,13 +39,10 @@ public class ChatController {
             // 1. Clear any old leftover actions in the current thread just in case.
             actionContext.clear();
             
-            // 2. Prepare the context and session. If the frontend didn't send any, provide fallbacks.
             String context = request.context() != null ? request.context() : "No context provided.";
-            String sessionId = request.sessionId() != null ? request.sessionId() : "default-user";
             
             // 3. Send the message and context to our AI Assistant.
             // This is a blocking call: it waits for Gemini to process the text and optionally call tools.
-            String responseText = plannerAssistant.chat(sessionId, request.message(), context);
             
             // 4. Create and return the final ChatResponse containing both the AI text and any captured actions.
             return new ChatResponse(responseText, actionContext.getActions());
