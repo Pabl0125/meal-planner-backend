@@ -31,4 +31,26 @@ public class DishService {
         }
         return dishRepository.save(dish);
     }
+
+    public Dish updateDish(Long id, Dish updatedDish) {
+        return dishRepository.findById(id).map(existingDish -> {
+            if (updatedDish.getName() != null && !updatedDish.getName().isEmpty()) {
+                existingDish.setName(updatedDish.getName());
+            }
+            if (updatedDish.getDescription() != null) {
+                existingDish.setDescription(updatedDish.getDescription());
+            }
+            if (updatedDish.getTags() != null) {
+                existingDish.setTags(updatedDish.getTags());
+            }
+            return dishRepository.save(existingDish);
+        }).orElseThrow(() -> new IllegalArgumentException("Dish not found with id: " + id));
+    }
+
+    public void deleteDish(Long id) {
+        if (!dishRepository.existsById(id)) {
+            throw new IllegalArgumentException("Dish not found with id: " + id);
+        }
+        dishRepository.deleteById(id);
+    }
 }

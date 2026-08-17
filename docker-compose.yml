@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  backend:
+    build: .
+    container_name: meal_planner_backend
+    ports:
+      - "8080:8080"
+    environment:
+      # Sobrescribimos el URL para que se conecte al contenedor de Postgres en vez de a localhost
+      - DB_URL=jdbc:postgresql://postgres:5432/menudb
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=1234
+      # Tu API Key (Deberás exportarla en tu servidor antes de hacer docker-compose up)
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
   postgres:
     image: postgres:latest
     container_name: db-menu
@@ -11,7 +27,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
   postgres_data:

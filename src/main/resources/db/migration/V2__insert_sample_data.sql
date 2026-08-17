@@ -1,15 +1,15 @@
 -- 1. Inserción de 10 Etiquetas (Solo categorías/familias de alimentos)
 INSERT INTO etiquetas (nombre) VALUES
+                                   ('Verdura'),
+                                   ('Fruta'),
                                    ('Carne'),
                                    ('Pescado'),
-                                   ('Marisco'),
-                                   ('Legumbres'),
-                                   ('Verduras'),
-                                   ('Pasta'),
-                                   ('Arroz'),
+                                   ('Lacteos'),
+                                   ('Frutos Secos'),
+                                   ('Patatas'),
                                    ('Huevos'),
-                                   ('Lácteos'),
-                                   ('Fruta');
+                                   ('Aceite'),
+                                   ('Cereales');
 
 -- 2. Inserción de 20 Platos
 INSERT INTO platos (nombre, descripcion) VALUES
@@ -37,42 +37,42 @@ INSERT INTO platos (nombre, descripcion) VALUES
 -- 3. Emparejamiento de Platos con Etiquetas (Entre 1 y 3 etiquetas por plato)
 INSERT INTO plato_etiquetas (plato_id, etiqueta_id) VALUES
 -- Salmón a la plancha (Pescado)
-(1, 2),
--- Pollo al horno con verduras (Carne, Verduras)
-(2, 1), (2, 5),
--- Lentejas estofadas (Legumbres, Verduras)
-(3, 4), (3, 5),
--- Paella de marisco (Arroz, Marisco, Pescado)
-(4, 7), (4, 3), (4, 2),
--- Tortilla de patatas (Huevos)
-(5, 8),
--- Pasta boloñesa (Pasta, Carne)
-(6, 6), (6, 1),
--- Ensalada mixta (Verduras, Pescado, Huevos)
-(7, 5), (7, 2), (7, 8),
--- Garbanzos con espinacas (Legumbres, Verduras)
-(8, 4), (8, 5),
--- Entrecot de ternera (Carne, Verduras)
-(9, 1), (9, 5),
--- Merluza en salsa verde (Pescado, Marisco)
-(10, 2), (10, 3),
--- Crema de calabaza (Verduras, Lácteos)
-(11, 5), (11, 9),
--- Risotto de setas (Arroz, Lácteos)
-(12, 7), (12, 9),
--- Lasaña de carne (Pasta, Carne, Lácteos)
-(13, 6), (13, 1), (13, 9),
--- Guiso de pavo con guisantes (Carne, Legumbres)
-(14, 1), (14, 4),
--- Revuelto de setas y gambas (Huevos, Marisco)
-(15, 8), (15, 3),
--- Macarrones con queso (Pasta, Lácteos)
-(16, 6), (16, 9),
--- Bacalao al pil-pil (Pescado)
-(17, 2),
--- Hamburguesa completa (Carne, Lácteos, Verduras)
-(18, 1), (18, 9), (18, 5),
+(1, 4),
+-- Pollo al horno con verduras (Carne, Verdura)
+(2, 3), (2, 1),
+-- Lentejas estofadas (Verdura, Patatas)
+(3, 1), (3, 7),
+-- Paella de marisco (Cereales, Pescado)
+(4, 10), (4, 4),
+-- Tortilla de patatas (Huevos, Patatas, Aceite)
+(5, 8), (5, 7), (5, 9),
+-- Pasta boloñesa (Cereales, Carne)
+(6, 10), (6, 3),
+-- Ensalada mixta (Verdura, Pescado, Huevos)
+(7, 1), (7, 4), (7, 8),
+-- Garbanzos con espinacas (Verdura)
+(8, 1),
+-- Entrecot de ternera (Carne, Verdura)
+(9, 3), (9, 1),
+-- Merluza en salsa verde (Pescado)
+(10, 4),
+-- Crema de calabaza (Verdura, Lacteos)
+(11, 1), (11, 5),
+-- Risotto de setas (Cereales, Lacteos, Verdura)
+(12, 10), (12, 5), (12, 1),
+-- Lasaña de carne (Cereales, Carne, Lacteos)
+(13, 10), (13, 3), (13, 5),
+-- Guiso de pavo con guisantes (Carne, Verdura)
+(14, 3), (14, 1),
+-- Revuelto de setas y gambas (Huevos, Pescado, Verdura)
+(15, 8), (15, 4), (15, 1),
+-- Macarrones con queso (Cereales, Lacteos)
+(16, 10), (16, 5),
+-- Bacalao al pil-pil (Pescado, Aceite)
+(17, 4), (17, 9),
+-- Hamburguesa completa (Carne, Lacteos, Verdura, Cereales)
+(18, 3), (18, 5), (18, 1), (18, 10),
 -- Ensalada de frutas (Fruta)
-(19, 10),
--- Calamares en su tinta (Marisco, Arroz)
-(20, 3), (20, 7);
+(19, 2),
+-- Calamares en su tinta (Pescado, Cereales)
+(20, 4), (20, 10);

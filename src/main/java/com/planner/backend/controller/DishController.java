@@ -43,4 +43,15 @@ public class DishController {
     public Dish createDish(@RequestBody Dish dish) {
         return dishService.saveDish(dish);
     }
+
+    @PutMapping("/{id}")
+    public Dish updateDish(@PathVariable Long id, @RequestBody Dish dish) {
+        return dishService.updateDish(id, dish);
+    }
+
+    @DeleteMapping("/{id}")
+    public org.springframework.http.ResponseEntity<Void> deleteDish(@PathVariable Long id) {
+        dishService.deleteDish(id);
+        return org.springframework.http.ResponseEntity.noContent().build();
+    }
 }

@@ -44,11 +44,17 @@ public class ChatController {
             String sessionId = request.sessionId() != null ? request.sessionId() : "default-user";
             
             // 3. Send the message and context to our AI Assistant.
-            // This is a blocking call: it waits for Gemini to process the text and optionally call tools.
+            // This is a blocking call: it waits for Gemini/Groq to process the text.
             String responseText = plannerAssistant.chat(sessionId, request.message(), context);
             
-            // 4. Create and return the final ChatResponse containing both the AI text and any captured actions.
-            return new ChatResponse(responseText, actionContext.getActions());
+            // 4. Since we instructed the AI to return a JSON string directly, we parse it into our ChatResponse record.
+            try {
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                return mapper.readValue(responseText, ChatResponse.class);
+            } catch (Exception e) {
+                // Fallback just in case the AI failed to generate valid JSON
+                return new ChatResponse(responseText, actionContext.getActions());
+            }
             
         } finally {
             // 5. Always clean up the ThreadLocal variable to prevent memory leaks in the Tomcat server.

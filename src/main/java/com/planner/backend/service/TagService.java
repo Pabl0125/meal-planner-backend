@@ -23,4 +23,20 @@ public class TagService {
         }
         return tagRepository.save(tag);
     }
+
+    public Tag updateTag(Long id, Tag updatedTag) {
+        return tagRepository.findById(id).map(existingTag -> {
+            if (updatedTag.getName() != null && !updatedTag.getName().isEmpty()) {
+                existingTag.setName(updatedTag.getName());
+            }
+            return tagRepository.save(existingTag);
+        }).orElseThrow(() -> new IllegalArgumentException("Tag not found with id: " + id));
+    }
+
+    public void deleteTag(Long id) {
+        if (!tagRepository.existsById(id)) {
+            throw new IllegalArgumentException("Tag not found with id: " + id);
+        }
+        tagRepository.deleteById(id);
+    }
 }

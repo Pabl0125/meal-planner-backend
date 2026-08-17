@@ -29,4 +29,14 @@ public class TagController {
         return tagService.saveTag(tag);
     }
 
+    @PutMapping("/{id}")
+    public Tag updateTag(@PathVariable Long id, @RequestBody Tag tag) {
+        return tagService.updateTag(id, tag);
+    }
+
+    @DeleteMapping("/{id}")
+    public org.springframework.http.ResponseEntity<Void> deleteTag(@PathVariable Long id) {
+        tagService.deleteTag(id);
+        return org.springframework.http.ResponseEntity.noContent().build();
+    }
 }
