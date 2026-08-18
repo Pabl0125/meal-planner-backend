@@ -19,16 +19,14 @@ import jakarta.annotation.PostConstruct;
 public class PlannerAssistant {
 
     private final ChatLanguageModel chatLanguageModel;
-    private final PlannerAiTools tools;
     private Assistant assistant;
 
     /**
      * Dependency Injection via Constructor.
-     * Spring Boot looks for Beans of type ChatLanguageModel and PlannerAiTools, and provides them here.
+     * Spring Boot looks for Beans of type ChatLanguageModel and provides it here.
      */
-    public PlannerAssistant(ChatLanguageModel chatLanguageModel, PlannerAiTools tools) {
+    public PlannerAssistant(ChatLanguageModel chatLanguageModel) {
         this.chatLanguageModel = chatLanguageModel;
-        this.tools = tools;
     }
 
     /**

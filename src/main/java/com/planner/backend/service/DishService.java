@@ -3,6 +3,7 @@ package com.planner.backend.service;
 import com.planner.backend.model.Dish;
 import com.planner.backend.repository.DishRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
@@ -10,6 +11,7 @@ import java.util.List;
  * Aquí es donde debe residir toda la "lógica de negocio" de tu aplicación.
  */
 @Service
+@Transactional(readOnly = true)
 public class DishService {
 
     private final DishRepository dishRepository;
@@ -24,6 +26,7 @@ public class DishService {
         return dishRepository.findAll();
     }
 
+    @Transactional
     public Dish saveDish(Dish dish) {
         // Ejemplo de lógica de negocio: validar que tenga nombre antes de guardar
         if (dish.getName() == null || dish.getName().isEmpty()) {
@@ -32,6 +35,7 @@ public class DishService {
         return dishRepository.save(dish);
     }
 
+    @Transactional
     public Dish updateDish(Long id, Dish updatedDish) {
         return dishRepository.findById(id).map(existingDish -> {
             if (updatedDish.getName() != null && !updatedDish.getName().isEmpty()) {
@@ -47,6 +51,7 @@ public class DishService {
         }).orElseThrow(() -> new IllegalArgumentException("Dish not found with id: " + id));
     }
 
+    @Transactional
     public void deleteDish(Long id) {
         if (!dishRepository.existsById(id)) {
             throw new IllegalArgumentException("Dish not found with id: " + id);

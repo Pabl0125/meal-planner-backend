@@ -15,18 +15,15 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/chat")
-@CrossOrigin(origins = "*")
 public class ChatController {
     
     private final PlannerAssistant plannerAssistant;
-    private final ActionContext actionContext;
 
     /**
-     * Constructor Dependency Injection: Spring provides instances of PlannerAssistant and ActionContext.
+     * Constructor Dependency Injection: Spring provides instances of PlannerAssistant.
      */
-    public ChatController(PlannerAssistant plannerAssistant, ActionContext actionContext) {
+    public ChatController(PlannerAssistant plannerAssistant) {
         this.plannerAssistant = plannerAssistant;
-        this.actionContext = actionContext;
     }
 
     /**
@@ -35,30 +32,20 @@ public class ChatController {
      */
     @PostMapping
     public ChatResponse chat(@RequestBody ChatRequest request) {
+        // 1. Prepare the context and session. If the frontend didn't send any, provide fallbacks.
+        String context = request.context() != null ? request.context() : "No context provided.";
+        String sessionId = request.sessionId() != null ? request.sessionId() : "default-user";
+        
+        // 2. Send the message and context to our AI Assistant.
+        String responseText = plannerAssistant.chat(sessionId, request.message(), context);
+        
+        // 3. Since we instructed the AI to return a JSON string directly, we parse it into our ChatResponse record.
         try {
-            // 1. Clear any old leftover actions in the current thread just in case.
-            actionContext.clear();
-            
-            // 2. Prepare the context and session. If the frontend didn't send any, provide fallbacks.
-            String context = request.context() != null ? request.context() : "No context provided.";
-            String sessionId = request.sessionId() != null ? request.sessionId() : "default-user";
-            
-            // 3. Send the message and context to our AI Assistant.
-            // This is a blocking call: it waits for Gemini/Groq to process the text.
-            String responseText = plannerAssistant.chat(sessionId, request.message(), context);
-            
-            // 4. Since we instructed the AI to return a JSON string directly, we parse it into our ChatResponse record.
-            try {
-                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                return mapper.readValue(responseText, ChatResponse.class);
-            } catch (Exception e) {
-                // Fallback just in case the AI failed to generate valid JSON
-                return new ChatResponse(responseText, actionContext.getActions());
-            }
-            
-        } finally {
-            // 5. Always clean up the ThreadLocal variable to prevent memory leaks in the Tomcat server.
-            actionContext.clear();
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            return mapper.readValue(responseText, ChatResponse.class);
+        } catch (Exception e) {
+            // Fallback just in case the AI failed to generate valid JSON
+            return new ChatResponse(responseText, java.util.Collections.emptyList());
         }
     }
 }

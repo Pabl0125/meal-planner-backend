@@ -19,7 +19,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/dishes")
-@CrossOrigin(origins = "*")
 public class DishController {
     /**
      * Inyección de Dependencias por Constructor (Buenas Prácticas):
