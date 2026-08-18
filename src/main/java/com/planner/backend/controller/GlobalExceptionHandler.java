@@ -45,9 +45,10 @@ public class GlobalExceptionHandler {
     // Maneja cualquier otro error inesperado (fallback)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
+        ex.printStackTrace(); // Log full stacktrace to console for easy debugging
         Map<String, String> response = new HashMap<>();
         response.put("error", "INTERNAL_SERVER_ERROR");
-        response.put("message", "Ocurrió un error inesperado en el servidor.");
+        response.put("message", ex.getMessage() != null ? ex.getMessage() : "Ocurrió un error inesperado en el servidor.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // 500
     }
 }
