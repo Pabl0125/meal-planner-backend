@@ -141,8 +141,9 @@ public class ChatController {
      * If it doesn't exist, it creates a new one automatically.
      */
     private Set<Tag> resolveTagsByName(List<String> tagNames) {
+        if (tagNames == null) return null;
         Set<Tag> resolved = new HashSet<>();
-        if (tagNames == null || tagNames.isEmpty()) return resolved;
+        if (tagNames.isEmpty()) return resolved;
 
         for (String name : tagNames) {
             if (name == null || name.isBlank()) continue;
