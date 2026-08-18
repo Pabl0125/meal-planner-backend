@@ -8,11 +8,7 @@ group = "com.planner"
 version = "0.0.1-SNAPSHOT"
 description = "meal-planner-backend"
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
+
 
 repositories {
     mavenCentral()
