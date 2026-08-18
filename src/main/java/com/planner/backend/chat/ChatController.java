@@ -30,10 +30,17 @@ public class ChatController {
      * @PostMapping maps HTTP POST requests hitting "/api/chat" to this method.
      * @RequestBody tells Spring to read the incoming JSON payload and deserialize it into our ChatRequest Java Record.
      */
+    // Límite de caracteres del contexto para no superar los límites de tokens de la API de IA
+    private static final int MAX_CONTEXT_CHARS = 3000;
+
     @PostMapping
     public ChatResponse chat(@RequestBody ChatRequest request) {
         // 1. Prepare the context and session. If the frontend didn't send any, provide fallbacks.
-        String context = request.context() != null ? request.context() : "No context provided.";
+        String rawContext = request.context() != null ? request.context() : "No context provided.";
+        // Truncate context to avoid request_too_large errors when the frontend sends all dishes
+        String context = rawContext.length() > MAX_CONTEXT_CHARS
+                ? rawContext.substring(0, MAX_CONTEXT_CHARS) + "... [truncated]"
+                : rawContext;
         String sessionId = request.sessionId() != null ? request.sessionId() : "default-user";
         
         // 2. Send the message and context to our AI Assistant.
