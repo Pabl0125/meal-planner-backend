@@ -11,5 +11,16 @@ package com.planner.backend.chat;
  * @param day      The day of the week the action applies to
  * @param meal     The specific meal (e.g., "Breakfast", "Lunch", "Dinner")
  * @param dishName The name of the dish being assigned (can be null for clear actions)
+ * @param description The description for a new or edited dish
+ * @param tags The list of tags for a new or edited dish
+ * @param id The id of the dish or tag to edit/delete
  */
-public record AiAction(String type, String day, String meal, String dishName) {}
+public record AiAction(
+    String type, 
+    String day, 
+    String meal, 
+    String dishName,
+    String description,
+    java.util.List<String> tags,
+    Long id
+) {}

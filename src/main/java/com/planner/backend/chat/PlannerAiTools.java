@@ -30,7 +30,7 @@ public class PlannerAiTools {
     public String assignDishToMeal(String dishName, String day, String meal) {
         // Instead of modifying the database directly, we capture the AI's intent 
         // and store it in our ThreadLocal context so the frontend can execute it visually.
-        actionContext.addAction(new AiAction("ASSIGN", day, meal, dishName));
+        actionContext.addAction(new AiAction("ASSIGN", day, meal, dishName, null, null, null));
         
         // This return string is fed back to the AI model so it knows the method succeeded.
         return "Successfully assigned " + dishName + " to " + day + " " + meal;
@@ -38,13 +38,13 @@ public class PlannerAiTools {
     
     @Tool("Clears the meal plan for a specific day and meal. Example: clearMeal('Monday', 'Lunch')")
     public String clearMeal(String day, String meal) {
-        actionContext.addAction(new AiAction("CLEAR_MEAL", day, meal, null));
+        actionContext.addAction(new AiAction("CLEAR_MEAL", day, meal, null, null, null, null));
         return "Successfully cleared " + day + " " + meal;
     }
     
     @Tool("Clears the entire weekly meal plan.")
     public String clearWeek() {
-        actionContext.addAction(new AiAction("CLEAR_WEEK", null, null, null));
+        actionContext.addAction(new AiAction("CLEAR_WEEK", null, null, null, null, null, null));
         return "Successfully cleared the whole week.";
     }
 }
