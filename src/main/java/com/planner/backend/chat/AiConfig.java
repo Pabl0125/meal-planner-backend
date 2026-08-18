@@ -35,9 +35,9 @@ public class AiConfig {
         return OpenAiChatModel.builder()
                 .apiKey(finalKey)
                 .baseUrl("https://api.groq.com/openai/v1")
-                .modelName("openai/gpt-oss-20b") // Using one of the models your specific API key allows
+                .modelName("groq/compound") // Groq's native compound chat model - best for agentic tasks
                 .responseFormat("json_object") // Force Groq to return ONLY valid JSON
-                .maxTokens(400) // Keep this low so we don't hit the 8000 TPM rate limit!
+                .maxTokens(1024) // Raised from 400 - compound has more generous rate limits
                 .build();
     }
 }
