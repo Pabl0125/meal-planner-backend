@@ -56,12 +56,17 @@ public class ChatController {
      */
     @PostMapping
     public ChatResponse chat(@RequestBody ChatRequest request) {
-        // 1. Prepare the context and session. If the frontend didn't send any, provide fallbacks.
-        String rawContext = request.context() != null ? request.context() : "No context provided.";
-        // Truncate context to avoid request_too_large errors when the frontend sends all dishes
-        String context = rawContext.length() > MAX_CONTEXT_CHARS
-                ? rawContext.substring(0, MAX_CONTEXT_CHARS) + "... [truncated]"
-                : rawContext;
+        // 1. Prepare the context and session.
+        String rawContext = request.context() != null ? request.context() : "";
+        
+        // Enrich context with a dynamic DB search based on the user's message
+        String enrichedContext = enrichContextWithSearch(request.message(), rawContext);
+        
+        // Truncate context to avoid request_too_large errors
+        String context = enrichedContext.length() > MAX_CONTEXT_CHARS
+                ? enrichedContext.substring(0, MAX_CONTEXT_CHARS) + "... [truncated]"
+                : (enrichedContext.isEmpty() ? "No context provided." : enrichedContext);
+        
         String sessionId = request.sessionId() != null ? request.sessionId() : "default-user";
 
         // 2. Send the message and context to our AI Assistant.
@@ -157,5 +162,47 @@ public class ChatController {
             resolved.add(tag);
         }
         return resolved;
+    }
+
+    /**
+     * Mini RAG (Retrieval-Augmented Generation) engine:
+     * Extracts keywords from the user's message, searches the DB, and injects matches into the context.
+     * This gives the AI the illusion of being able to "search" the database natively.
+     */
+    private String enrichContextWithSearch(String message, String currentContext) {
+        if (message == null || message.isBlank()) return currentContext;
+
+        // Extract words longer than 3 chars to use as search keywords
+        String[] words = message.toLowerCase().replaceAll("[^a-zñáéíóú]", " ").split("\\s+");
+        List<String> keywords = java.util.Arrays.stream(words)
+                .filter(w -> w.length() > 3)
+                .toList();
+
+        if (keywords.isEmpty()) return currentContext;
+
+        // Search the DB for dishes matching the keywords
+        List<Dish> allDishes = dishService.getAllDishes();
+        List<Dish> matchedDishes = allDishes.stream()
+                .filter(dish -> {
+                    String dishNameLower = dish.getName().toLowerCase();
+                    return keywords.stream().anyMatch(dishNameLower::contains);
+                })
+                .limit(10) // Cap to top 10 matches to save tokens
+                .toList();
+
+        if (matchedDishes.isEmpty()) return currentContext;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Platos encontrados en la base de datos (resultados de búsqueda automática):\n");
+        for (Dish d : matchedDishes) {
+            sb.append(String.format("- ID: %d | Nombre: %s | Desc: %s | Etiquetas: %s\n",
+                    d.getId(),
+                    d.getName(),
+                    d.getDescription() != null ? d.getDescription() : "",
+                    d.getTags().stream().map(Tag::getName).toList()));
+        }
+        sb.append("\nContexto del frontend:\n").append(currentContext);
+
+        return sb.toString();
     }
 }
